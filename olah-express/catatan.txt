@@ -1,0 +1,3 @@
+Menjalankan: nodemon app.js -e html,js
+
+Nanti coba hubungkan sama chokidar dan live-server

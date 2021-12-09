@@ -1,0 +1,19 @@
+{
+  "name": "olah-express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon app.js -e html,js",
+    "build": "nunjucks \"**/*.html\" -p src -o build"
+  },
+  "keywords": [],
+  "author": "",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nunjucks": "^3.2.3",
+    "nunjucks-cli": "^1.0.0"
+  }
+}
