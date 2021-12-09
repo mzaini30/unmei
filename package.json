@@ -1,11 +1,10 @@
 {
-  "name": "olah-express",
-  "version": "1.0.0",
+  "name": "unmei",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "dev": "nodemon app.js -e html,js",
-    "build": "nunjucks \"**/*.html\" -p src -o build"
+  "bin": {
+    "unmei": "./app.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "nodemon": "^2.0.15",
     "nunjucks": "^3.2.3",
     "nunjucks-cli": "^1.0.0"
   }
