@@ -1,7 +1,7 @@
 {
   "name": "unmei",
-  "version": "0.0.6",
-  "description": "",
+  "version": "0.0.7",
+  "description": "SSG tercepat...",
   "main": "index.js",
   "bin": {
     "unmei": "./app.js"
