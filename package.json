@@ -1,6 +1,6 @@
 {
   "name": "unmei",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -16,7 +16,6 @@
     "express": "^4.17.1",
     "glob": "^7.2.0",
     "mkdirp": "^1.0.4",
-    "nodemon": "^2.0.15",
     "nunjucks": "^3.2.3"
   }
 }
