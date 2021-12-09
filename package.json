@@ -1,6 +1,6 @@
 {
   "name": "unmei",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -10,6 +10,14 @@
   "author": "",
   "type": "module",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mzaini30/unmei.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mzaini30/unmei/issues"
+  },
+  "homepage": "https://github.com/mzaini30/unmei#readme",
   "dependencies": {
     "chalk": "^5.0.0",
     "chokidar": "^3.5.2",
