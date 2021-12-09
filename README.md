@@ -8,9 +8,9 @@ Static Site Generator yang simpel dan cepat.
 
 ## Konsep
 
-Jadi, ketika mode dev, dia menggunakan server Express sehingga nggak perlu menunggu waktu generate SSG yang memakan waktu lama.
+Ketika mode dev, dia kayak PHP (bukan generate SSG)
 
-Lalu, ketika build, baru generate ke SSG.
+Ketika build, baru generate SSG
 
 ## Yang Digunakan pada Package Ini
 
