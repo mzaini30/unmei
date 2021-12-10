@@ -4,6 +4,7 @@ specifiers:
   browser-sync: ^2.27.7
   chalk: ^5.0.0
   chokidar: ^3.5.2
+  clean-css: ^5.2.2
   express: ^4.17.1
   fs-extra: ^10.0.0
   glob: ^7.2.0
@@ -21,6 +22,7 @@ dependencies:
   browser-sync: 2.27.7
   chalk: 5.0.0
   chokidar: 3.5.2
+  clean-css: 5.2.2
   express: 4.17.1
   fs-extra: 10.0.0
   glob: 7.2.0
@@ -301,6 +303,13 @@ packages:
   /clean-css/4.2.4:
     resolution: {integrity: sha512-EJUDT7nDVFDvaQgAo2G/PJvxmp1o/c6iXLbswsBbUFXi1Nr+AjA2cKmfbKDMjMvzEe75g3P6JkaDDAKk96A85A==}
     engines: {node: '>= 4.0'}
+    dependencies:
+      source-map: 0.6.1
+    dev: false
+
+  /clean-css/5.2.2:
+    resolution: {integrity: sha512-/eR8ru5zyxKzpBLv9YZvMXgTSSQn7AdkMItMYynsFgGwTveCRVam9IUPFloE85B4vAIj05IuKmmEoV7/AQjT0w==}
+    engines: {node: '>= 10.0'}
     dependencies:
       source-map: 0.6.1
     dev: false

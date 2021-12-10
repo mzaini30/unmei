@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import express from 'express'
+import CleanCSS from 'clean-css'
 import UglifyJS from 'uglify-js'
 import recursive from 'recursive-readdir-sync'
 import { minify } from 'html-minifier'
@@ -34,6 +35,15 @@ const saatDev = process.argv.includes('dev')
 const saatBuild = process.argv.includes('build')
 
 const browserSync = installBrowserSync.create()
+
+function createFolderIfNone(dirName) {
+  if (!fs.existsSync(dirName))
+      fs.mkdirSync(dirName);
+  
+  return
+}
+
+createFolderIfNone('static')
 
 function olahSemuanya(html) {
   let isi = olahWindi(html)
@@ -83,7 +93,11 @@ if (saatBuild) {
   const nunjucksEnv = nunjucks.configure('src', {
     trimBlocks: true,
     lstripBlocks: true,
-    noCache: true
+    noCache: true,
+    tags: {
+      variableStart: '((',
+      variableEnd: '))'
+    }
   })
   const outputDir = 'build'
 
@@ -124,13 +138,22 @@ if (saatBuild) {
     render(files)
   })
   fs.copy("./static", './build/').then(() => {
-      let files = recursive('build')
-      files = files.filter(x => x.includes('.js'))
-      for (let x of files) {
-        let isi = fs.readFileSync(x).toString()
-        isi = UglifyJS.minify(isi)
-        fs.writeFileSync(x, isi.code)
-      }
+    let files = recursive('build')
+
+    let fileJS = files.filter(x => x.match(/\.js$/))
+    for (let x of fileJS) {
+      let isi = fs.readFileSync(x).toString()
+      isi = UglifyJS.minify(isi)
+      fs.writeFileSync(x, isi.code)
+    }
+
+    let fileCSS = files.filter(x => x.match(/\.css$/))
+    for (let x of fileCSS) {
+      let isi = fs.readFileSync(x).toString()
+      isi = new CleanCSS().minify(isi)
+      fs.writeFileSync(x, isi.styles)
+    }
+
   })
 }
 
@@ -143,7 +166,11 @@ if (saatDev) {
     nunjucks.configure(_templates, {
       autoescape: true,
       cache: false,
-      express: app
+      express: app,
+      tags: {
+        variableStart: '((',
+        variableEnd: '))'
+      }
     });
 
     // Set Nunjucks as rendering engine for pages with .html suffix
@@ -159,7 +186,8 @@ if (saatDev) {
     });
 
   }
-  const port = process.env.PORT || 8472;
+  const portAcak = `${Math.random()}`.substring(2, 6).replace(/0/g, '1')
+  const port = process.env.PORT || portAcak;
   // Start server
   app.listen(port);
   console.log('Listening on port %s...', port);
@@ -167,7 +195,7 @@ if (saatDev) {
   browserSync.watch('**/*.*').on('change', browserSync.reload)
   browserSync.init({
     proxy: {
-      target: 'http://localhost:8472/index.html',
+      target: `http://localhost:${portAcak}/index.html`,
     },
     rewriteRules: [{
       match: /[\s\S]*/,

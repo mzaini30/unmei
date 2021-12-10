@@ -51,4 +51,7 @@ Untuk mode build: `unmei build`
 - [ ] Ubah gambar menjadi webp (ini jadinya nggak bisa dipakai di Termux)
 - [x] Minify HTML
 - [x] Minify aset JS
-- [ ] Minify aset CSS
+- [x] Minify aset CSS
+- [x] Ganti delimiter Nunjucks jadi (( ))
+- [x] Dynamic port
+- [x] Hapus error folder static kalau nggak ada
