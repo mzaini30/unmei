@@ -11,4 +11,10 @@ console.log(windi(`
 			@apply text-right text-red-500 <sm:(text-center text-3xl)
 		}
 	</style>
+
+	<style lang='windi'>
+		* {
+			@apply text-green-500
+		}
+	</style>
 `))

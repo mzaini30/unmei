@@ -9,17 +9,30 @@ export default function(html) {
   const processor = new Processor()
   // let styleSheets = ['']
 
-  let styleBlock
+  // let styleBlock
 
-  const block = html.match(/(?<=<style lang=['"]windi["']>)[\s\S]*(?=<\/style>)/);
-  if (block && block.index) {
-    const css = html.slice(block.index, block.index + block[0].length);
-    const parser = new CSSParser(css, processor);
-    // return parser.parse() // ini
-    styleBlock = parser.parse()
-    // console.log(JSON.stringify(parser.parse()))
-    // styleSheets[0] = styleSheets[0].extend(parser.parse());
+  // const block = html.match(/(?<=<style lang=['"]windi["']>)[\s\S]*(?=<\/style>)/);
+  const block = html.match(/<style lang=['"]windi['"]>([\S\s]*?)<\/style>/g);
+
+  let semuaStyleBlock = []
+
+  if (block) {
+    for (let x of block) {
+      const css = x.replace(/<style lang=['"]windi['"]>/, '').replace('</style>', '')
+      const parser = new CSSParser(css, processor);
+      const calonStyleBlock = parser.parse()
+      semuaStyleBlock = [...semuaStyleBlock, calonStyleBlock]
+    }
+    // return semuaStyleBlock
   }
+
+  // return block
+
+  // if (block && block.index) {
+  //   const css = html.slice(block.index, block.index + block[0].length);
+  //   const parser = new CSSParser(css, processor);
+  //   styleBlock = parser.parse()
+  // }
 
   // Parse all classes and put into one line to simplify operations
   const htmlClasses = new HTMLParser(html)
@@ -40,9 +53,11 @@ export default function(html) {
   const APPEND = false
   const MINIFY = false
 
-  // const styles = interpretedSheet/*.extend(preflightSheet, APPEND)*/.extend(styleBlock, APPEND).build(MINIFY) // diubah ke css, nggak pakai preflight
-  const styles = interpretedSheet.extend(preflightSheet, APPEND).extend(styleBlock, APPEND).extend(styleBlock, APPEND).extend(styleBlock, APPEND).build(MINIFY) // diubah ke css
-  // const styles = interpretedSheet.extend(preflightSheet, APPEND).extend(styleBlock, APPEND) // masih bentuk class Windi
+  let styles = interpretedSheet.extend(preflightSheet, APPEND)
+  for (let x of semuaStyleBlock){
+    styles = styles.extend(x)
+  }
+  styles = styles.build(MINIFY)
 
   return styles
 }

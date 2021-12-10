@@ -93,11 +93,25 @@ if (process.argv.includes('dev')) {
 
   browserSync.watch('**/*.*').on('change', browserSync.reload)
   browserSync.init({
-    proxy: 'http://localhost:8472/index.html'
+    proxy: {
+      target: 'http://localhost:8472/index.html',
+      // proxyRes: [
+      //   function(proxyRes, req, res) {
+      //     // res.write('kucing')
+      //   }
+      // ]
+    },
+    rewriteRules: [
+      {
+        match: /<body/,
+        fn: function(req, res, match){
+          return 'kucing'
+        }
+      }
+    ]
   })
 
-  chokidar.watch('./src', {
-  }).on('all', (event, path) => {
+  chokidar.watch('./src', {}).on('all', (event, path) => {
     server()
   });
 }
