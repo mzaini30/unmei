@@ -94,7 +94,7 @@ function renderMarkdown(teks) {
 }
 
 if (saatBuild) {
-  const nunjucksEnv = nunjucks.configure('src', {
+  const nunjucksEnv = nunjucks.configure('./src', {
     trimBlocks: true,
     lstripBlocks: true,
     noCache: true,
@@ -131,7 +131,7 @@ if (saatBuild) {
     }
   }
 
-  const globOptions = { strict: true, cwd: 'src', ignore: '**/_*.*', nonull: true }
+  const globOptions = { strict: true, cwd: './src', ignore: '**/_*.*', nonull: true }
 
   // Render the files given a glob pattern (except the ones starting with "_")
   glob('**/*.html', globOptions, (err, files) => {
@@ -163,7 +163,8 @@ if (saatDev) {
 
   function server() {
     // Configure Nunjucks
-    var _templates = process.env.NODE_PATH ? process.env.NODE_PATH + '/src' : 'src';
+    // var _templates = process.env.NODE_PATH ? process.env.NODE_PATH + '/src' : './src';
+    let _templates = './src'
     nunjucks.configure(_templates, {
       autoescape: true,
       cache: false,
