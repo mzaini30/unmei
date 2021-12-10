@@ -1,18 +1,21 @@
 #!/usr/bin/env node
 
 import express from 'express'
+import windi from './windi.js'
+import fs from 'fs-extra'
 import nunjucks from 'nunjucks'
-import { resolve, basename, dirname } from 'path'
+import { resolve, dirname } from 'path'
 import mkdirp from 'mkdirp'
 import { readFileSync, writeFileSync } from 'fs'
 import chalk from 'chalk'
 import glob from 'glob'
 import chokidar from 'chokidar'
-// import { exec } from 'child_process'
+import installBrowserSync from 'browser-sync'
+
+
+const browserSync = installBrowserSync.create()
 
 if (process.argv.includes('build')) {
-  // generate nunjucks
-  // exec('nunjucks "**/*.html" -p src -o build', () => {})
 
   const nunjucksEnv = nunjucks.configure('src', {
     trimBlocks: true,
@@ -51,6 +54,7 @@ if (process.argv.includes('build')) {
     if (err) return console.error(chalk.red(err))
     render(files)
   })
+  fs.copy("./static", './build/')
 }
 
 if (process.argv.includes('dev')) {
@@ -59,7 +63,7 @@ if (process.argv.includes('dev')) {
   function server() {
 
     // Define port to run server on
-    
+
 
     // Configure Nunjucks
     var _templates = process.env.NODE_PATH ? process.env.NODE_PATH + '/src' : 'src';
@@ -73,6 +77,8 @@ if (process.argv.includes('dev')) {
     app.engine('html', nunjucks.render);
     app.set('view engine', 'html');
 
+    app.use(express.static('static'));
+
     app.get('/favicon.ico', (req, res) => res.status(204));
     // Respond to all GET requests by rendering relevant page using Nunjucks
     app.get(/\/(.+)/, function(req, res) {
@@ -80,21 +86,18 @@ if (process.argv.includes('dev')) {
     });
 
   }
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 8472;
   // Start server
   app.listen(port);
   console.log('Listening on port %s...', port);
 
+  browserSync.watch('**/*.*').on('change', browserSync.reload)
+  browserSync.init({
+    proxy: 'http://localhost:8472/index.html'
+  })
+
   chokidar.watch('./src', {
-    // ignored: './dev/static/windi.css',
-    // awaitWriteFinish: {
-    //   stabilityThreshold: 500
-    // }
   }).on('all', (event, path) => {
     server()
   });
 }
-
-// if (process.argv.includes('dev')) {
-//   exec('nodemon -e html --exec "unmei server"', () => {})
-// }

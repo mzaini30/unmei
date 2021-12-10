@@ -41,8 +41,8 @@ Untuk mode build: `unmei build`
 
 ## Rencana Berikutnya
 
-- [ ] Minify semuanya (HTML, CSS, JS)
-- [ ] Ubah gambar menjadi webp
-- [ ] Auto sitemap
 - [ ] Windi (Hapus kode Windi saat build)
-- [ ] Markdown
+- [ ] Auto sitemap
+- [ ] Markdown + Shiki
+- [ ] Ubah gambar menjadi webp
+- [ ] Minify semuanya (HTML, CSS, JS)
