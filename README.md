@@ -47,6 +47,8 @@ Untuk mode build: `unmei build`
 - [ ] Auto sitemap
 - [ ] Auto generate robots.txt
 - [x] Markdown + Shiki (dev)
-- [ ] Markdown + Shiki (build)
-- [ ] Ubah gambar menjadi webp
-- [ ] Minify semuanya (HTML, CSS, JS)
+- [x] Markdown + Shiki (build)
+- [ ] Ubah gambar menjadi webp (ini jadinya nggak bisa dipakai di Termux)
+- [x] Minify HTML
+- [x] Minify aset JS
+- [ ] Minify aset CSS

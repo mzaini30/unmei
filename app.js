@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
 import express from 'express'
+import UglifyJS from 'uglify-js'
+import recursive from 'recursive-readdir-sync'
+import { minify } from 'html-minifier'
 import windi from './windi.js'
 import fs from 'fs-extra'
 import nunjucks from 'nunjucks'
@@ -32,17 +35,48 @@ const saatBuild = process.argv.includes('build')
 
 const browserSync = installBrowserSync.create()
 
+function olahSemuanya(html) {
+  let isi = olahWindi(html)
+  if (saatBuild) {
+    isi = isi.replace(/<style lang=['"]windi['"]>([\S\s]*?)<\/style>/g, '')
+  }
+  isi = renderMarkdown(isi)
+  if (saatBuild) {
+    isi = isi.replace(/<script type=.module.>/g, '<script>a;')
+
+    isi = minify(isi, {
+      collapseWhitespace: true,
+      removeComments: true,
+      collapseInlineTagWhitespace: true,
+      minifyJS: true,
+      minifyCSS: true,
+      ignoreCustomFragments: [/\{\{[\s\S]*?\}\}/],
+      customEventAttributes: [/^(?:v-on:|@)[a-z]{3,}$/],
+      keepClosingSlash: true
+    })
+
+    isi = isi.replace(/<script>a;/g, '<script type="module">')
+  }
+  return isi
+}
+
 function renderMarkdown(teks) {
-  let pecahBaris = teks.split('\n')
-  pecahBaris = pecahBaris.filter((x, n) => n != 0)
+  function olah(teks) {
+    let pecahBaris = teks.split('\n')
+    pecahBaris = pecahBaris.filter((x, n) => n != 0)
 
-  let karakterHarusLenyap = pecahBaris[0].match(/^\s+/)
-  // hasil: ["\t\t"]
-  karakterHarusLenyap = karakterHarusLenyap ? new RegExp(`^${karakterHarusLenyap[0]}`, 'g') : ''
+    let karakterHarusLenyap = pecahBaris[0].match(/^\s+/)
+    // hasil: ["\t\t"]
+    karakterHarusLenyap = karakterHarusLenyap ? new RegExp(`^${karakterHarusLenyap[0]}`, 'g') : ''
 
-  teks = teks.split('\n').map(x => x.replace(karakterHarusLenyap, '')).join('\n')
+    teks = teks.split('\n').map(x => x.replace(karakterHarusLenyap, '')).join('\n')
 
-  return md.render(teks).replace(/@/g, '&commat;')
+    return md.render(teks).replace(/@/g, '&commat;')
+  }
+
+  return teks.replace(/(@markdown)([\S\s]*?)(@endmarkdown)/g, function(match, p1, p2) {
+    return olah(p2)
+  })
 }
 
 if (saatBuild) {
@@ -73,8 +107,11 @@ if (saatBuild) {
 
       console.log(chalk.blue('Rendering: ' + file))
       // res: hasil build
-      res = olahWindi(res)
-      res = res.replace(/<style lang=['"]windi['"]>([\S\s]*?)<\/style>/g, '')
+      res = olahSemuanya(res)
+
+      // res = olahWindi(res)
+      // res = res.replace(/<style lang=['"]windi['"]>([\S\s]*?)<\/style>/g, '')
+      // res = renderMarkdown(res)
       writeFileSync(outputFile, res)
     }
   }
@@ -86,7 +123,15 @@ if (saatBuild) {
     if (err) return console.error(chalk.red(err))
     render(files)
   })
-  fs.copy("./static", './build/')
+  fs.copy("./static", './build/').then(() => {
+      let files = recursive('build')
+      files = files.filter(x => x.includes('.js'))
+      for (let x of files) {
+        let isi = fs.readFileSync(x).toString()
+        isi = UglifyJS.minify(isi)
+        fs.writeFileSync(x, isi.code)
+      }
+  })
 }
 
 if (saatDev) {
@@ -137,14 +182,6 @@ if (saatDev) {
   });
 }
 
-function olahSemuanya(html){
-  let isi = olahWindi(html)
-  isi = isi.replace(/(@markdown)([\S\s]*?)(@endmarkdown)/g, function(match, p1, p2){
-    return renderMarkdown(p2)
-  })
-  return isi
-}
-
 function olahWindi(html) {
   let css = windi(html)
   if (saatDev) {
@@ -163,11 +200,11 @@ function olahWindi(html) {
     `)
   }
   if (saatBuild) {
-    return html.replace('<body>', `
-      <body>
+    return html.replace('</head>', `
       <style>
         ${css}
       </style>
+      </head>
     `)
   }
 }
