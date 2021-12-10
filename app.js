@@ -44,8 +44,8 @@ function createFolderIfNone(dirName) {
 }
 
 const tags = {
-  variableStart: '<$',
-  variableEnd: '$>'
+  variableStart: '{$',
+  variableEnd: '$}'
 }
 createFolderIfNone('static')
 

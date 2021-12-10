@@ -93,6 +93,6 @@ Sintaks:
 - [x] Minify HTML
 - [x] Minify aset JS
 - [x] Minify aset CSS
-- [x] Ganti delimiter Nunjucks jadi <$ $>
+- [x] Ganti delimiter Nunjucks jadi {$ $}
 - [x] Dynamic port
 - [x] Hapus error folder static kalau nggak ada
