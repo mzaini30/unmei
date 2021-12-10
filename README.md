@@ -27,6 +27,8 @@ Ketika build, baru generate SSG
 
 Jadi, semua file Nunjucks diletakkan di folder `src` dengan ekstensi `html`.
 
+Untuk hasil build, nanti terbentuk folder `build`.
+
 ## Instalasi
 
 ```bash
@@ -38,6 +40,45 @@ npm i -g unmei
 Untuk mode dev: `unmei dev`
 
 Untuk mode build: `unmei build`
+
+## Fitur
+
+### Windi
+
+Otomatis menambahkan styling Windi (plus preflight) pada setiap halaman.
+
+### Markdown
+
+Sintaks:
+
+```
+@markdown
+  Kode Markdown di sini
+@endmarkdown
+```
+
+## Sublime Emmet Preferences
+
+```json
+{
+  "telemetry": true,
+  "uid": "37791c0d-2653-4447-8bc0-731daa283775",
+  "config": {
+    "markup": {
+      "snippets": {
+        "extends": "{{% extends '' %}}",
+        "block": "{{% block  %}\n\t\n{% endblock %}}",
+        "markdown": "{@markdown\n\t\n@endmarkdown}",
+        "windi": "style[lang=windi]",
+        "petite": "script>{PetiteVue.createApp({}).mount()\n}",
+      },
+      "options": {
+        "output.selfClosingStyle": "xhtml"
+      }
+    }
+  }
+}
+```
 
 ## Rencana Berikutnya
 
