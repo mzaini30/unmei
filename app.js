@@ -12,11 +12,40 @@ import glob from 'glob'
 import chokidar from 'chokidar'
 import installBrowserSync from 'browser-sync'
 
+import markdown from 'markdown-it'
+import getShiki from 'markdown-it-shiki'
+import githubHeading from 'markdown-it-github-headings'
+
+const md = markdown()
+const shiki = getShiki.default
+
+md.use(shiki, {
+  theme: 'nord'
+})
+md.use(githubHeading, {
+  prefixHeadingIds: false,
+  enableHeadingLinkIcons: false
+})
+
+const saatDev = process.argv.includes('dev')
+const saatBuild = process.argv.includes('build')
 
 const browserSync = installBrowserSync.create()
 
-if (process.argv.includes('build')) {
+function renderMarkdown(teks) {
+  let pecahBaris = teks.split('\n')
+  pecahBaris = pecahBaris.filter((x, n) => n != 0)
 
+  let karakterHarusLenyap = pecahBaris[0].match(/^\s+/)
+  // hasil: ["\t\t"]
+  karakterHarusLenyap = karakterHarusLenyap ? new RegExp(`^${karakterHarusLenyap[0]}`, 'g') : ''
+
+  teks = teks.split('\n').map(x => x.replace(karakterHarusLenyap, '')).join('\n')
+
+  return md.render(teks).replace(/@/g, '&commat;')
+}
+
+if (saatBuild) {
   const nunjucksEnv = nunjucks.configure('src', {
     trimBlocks: true,
     lstripBlocks: true,
@@ -33,7 +62,7 @@ if (process.argv.includes('build')) {
     for (const file of files) {
       // No performance benefits in async rendering
       // https://mozilla.github.io/nunjucks/api.html#asynchronous-support
-      const res = nunjucksEnv.render(file, context)
+      let res = nunjucksEnv.render(file, context)
 
       let outputFile = file.replace(/\.\w+$/, `.html`)
 
@@ -43,6 +72,9 @@ if (process.argv.includes('build')) {
       }
 
       console.log(chalk.blue('Rendering: ' + file))
+      // res: hasil build
+      res = olahWindi(res)
+      res = res.replace(/<style lang=['"]windi['"]>([\S\s]*?)<\/style>/g, '')
       writeFileSync(outputFile, res)
     }
   }
@@ -57,14 +89,10 @@ if (process.argv.includes('build')) {
   fs.copy("./static", './build/')
 }
 
-if (process.argv.includes('dev')) {
+if (saatDev) {
   const app = express()
 
   function server() {
-
-    // Define port to run server on
-
-
     // Configure Nunjucks
     var _templates = process.env.NODE_PATH ? process.env.NODE_PATH + '/src' : 'src';
     nunjucks.configure(_templates, {
@@ -95,23 +123,51 @@ if (process.argv.includes('dev')) {
   browserSync.init({
     proxy: {
       target: 'http://localhost:8472/index.html',
-      // proxyRes: [
-      //   function(proxyRes, req, res) {
-      //     // res.write('kucing')
-      //   }
-      // ]
     },
-    rewriteRules: [
-      {
-        match: /<body/,
-        fn: function(req, res, match){
-          return 'kucing'
-        }
+    rewriteRules: [{
+      match: /[\s\S]*/,
+      fn: function(req, res, match) {
+        return olahSemuanya(res.data)
       }
-    ]
+    }]
   })
 
   chokidar.watch('./src', {}).on('all', (event, path) => {
     server()
   });
+}
+
+function olahSemuanya(html){
+  let isi = olahWindi(html)
+  isi = isi.replace(/(@markdown)([\S\s]*?)(@endmarkdown)/g, function(match, p1, p2){
+    return renderMarkdown(p2)
+  })
+  return isi
+}
+
+function olahWindi(html) {
+  let css = windi(html)
+  if (saatDev) {
+    return html.replace('<body>', `
+      <body>
+
+      <script id="__bs_script__">
+        //<![CDATA[
+          document.write("<scr"+"ipt async src='/browser-sync/browser-sync-client.js?v=2.27.7'></scr"+"ipt>".replace("HOST", location.hostname));
+        //]]>
+      </script>
+      
+      <style>
+        ${css}
+      </style>
+    `)
+  }
+  if (saatBuild) {
+    return html.replace('<body>', `
+      <body>
+      <style>
+        ${css}
+      </style>
+    `)
+  }
 }
