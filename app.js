@@ -43,6 +43,10 @@ function createFolderIfNone(dirName) {
   return
 }
 
+const tags = {
+  variableStart: '<$',
+  variableEnd: '$>'
+}
 createFolderIfNone('static')
 
 function olahSemuanya(html) {
@@ -94,10 +98,7 @@ if (saatBuild) {
     trimBlocks: true,
     lstripBlocks: true,
     noCache: true,
-    tags: {
-      variableStart: '((',
-      variableEnd: '))'
-    }
+    tags
   })
   const outputDir = 'build'
 
@@ -167,10 +168,7 @@ if (saatDev) {
       autoescape: true,
       cache: false,
       express: app,
-      tags: {
-        variableStart: '((',
-        variableEnd: '))'
-      }
+      tags
     });
 
     // Set Nunjucks as rendering engine for pages with .html suffix
