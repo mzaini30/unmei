@@ -57,6 +57,18 @@ Sintaks:
 @endmarkdown
 ```
 
+### Tambah Sitemap
+
+Buat file `unmei.json` yang isinya seperti ini:
+
+```json
+{
+  "situs": "https://kucing.com"
+}
+```
+
+`https://kucing.com` itu sesuaikan sama link websitemu.
+
 ## Sublime Emmet Preferences
 
 ```json
