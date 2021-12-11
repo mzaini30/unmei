@@ -27,7 +27,7 @@ Ketika build, baru generate SSG
 
 Jadi, semua file Nunjucks diletakkan di folder `src` dengan ekstensi `html`.
 
-Untuk hasil build, nanti terbentuk folder `build`.
+Untuk hasil build, nanti terbentuk folder `public`.
 
 ## Instalasi
 
@@ -85,8 +85,8 @@ Sintaks:
 - [x] Windi saat dev
 - [x] Windi saat build
 - [x] Hapus kode Windi saat build
-- [ ] Auto sitemap
-- [ ] Auto generate robots.txt
+- [x] Auto sitemap
+- [x] Auto generate robots.txt
 - [x] Markdown + Shiki (dev)
 - [x] Markdown + Shiki (build)
 - [ ] Ubah gambar menjadi webp (ini jadinya nggak bisa dipakai di Termux)

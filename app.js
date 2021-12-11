@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import readJsonSync from 'read-json-sync'
+import { SitemapManager } from 'sitemap-manager'
 import express from 'express'
 import CleanCSS from 'clean-css'
 import UglifyJS from 'uglify-js'
@@ -38,8 +40,8 @@ const browserSync = installBrowserSync.create()
 
 function createFolderIfNone(dirName) {
   if (!fs.existsSync(dirName))
-      fs.mkdirSync(dirName);
-  
+    fs.mkdirSync(dirName);
+
   return
 }
 
@@ -70,6 +72,15 @@ function olahSemuanya(html) {
     })
 
     isi = isi.replace(/<script>a;/g, '<script type="module">')
+
+    let situs = ''
+    if (fs.existsSync('./unmei.json')){
+      const ambilConfig = readJsonSync('unmei.json')
+      if (ambilConfig.situs){
+        buatSitemap(ambilConfig.situs)
+        buatRobots(ambilConfig.situs)
+      }
+    }
   }
   return isi
 }
@@ -100,7 +111,7 @@ if (saatBuild) {
     noCache: true,
     tags
   })
-  const outputDir = 'build'
+  const outputDir = 'public'
 
   // const context = argv._[1] ? JSON.parse(readFileSync(argv._[1], 'utf8')) : {}
   const context = {}
@@ -138,8 +149,8 @@ if (saatBuild) {
     if (err) return console.error(chalk.red(err))
     render(files)
   })
-  fs.copy("./static", './build/').then(() => {
-    let files = recursive('build')
+  fs.copy("./static", './public/').then(() => {
+    let files = recursive('public')
 
     let fileJS = files.filter(x => x.match(/\.js$/))
     for (let x of fileJS) {
@@ -156,6 +167,42 @@ if (saatBuild) {
     }
 
   })
+}
+
+function buatRobots(situs){
+  let isi = `
+    User-agent: *
+    Allow: /
+    Disallow:
+
+    Sitemap: ${situs}/sitemap.xml
+    Sitemap: ${situs}/sitemap-unmei.xml
+  `
+  isi = isi.trim().split('\n').map(x => x = x.trimStart()).join('\n')
+  fs.writeFileSync('public/robots.txt', isi)
+}
+
+function buatSitemap(situs) {
+  let files = recursive('public')
+  files = ['public/', ...files]
+  files = files.map(x => x.replace(/^public/, situs))
+
+  let filesRapi = []
+  files = files.forEach(x => {
+    filesRapi = [...filesRapi, {
+      loc: x,
+      lastmod: new Date(),
+      changefreq: 3,
+      priority: 0.5
+    }]
+  })
+
+  const MySitemap = new SitemapManager({
+    siteURL: situs
+  })
+
+  MySitemap.addUrl('unmei', filesRapi)
+  MySitemap.finish()
 }
 
 if (saatDev) {
@@ -179,7 +226,7 @@ if (saatDev) {
     app.use(express.static('static'));
 
     app.get('/favicon.ico', (req, res) => res.status(204));
-    app.get('/', function(req, res){
+    app.get('/', function(req, res) {
       res.render('index.html')
     })
     // Respond to all GET requests by rendering relevant page using Nunjucks

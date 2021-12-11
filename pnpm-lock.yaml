@@ -14,7 +14,9 @@ specifiers:
   markdown-it-shiki: ^0.3.0
   mkdirp: ^1.0.4
   nunjucks: ^3.2.3
+  read-json-sync: ^2.0.1
   recursive-readdir-sync: ^1.0.6
+  sitemap-manager: ^2.1.0
   uglify-js: ^3.14.4
   windicss: ^3.2.1
 
@@ -32,7 +34,9 @@ dependencies:
   markdown-it-shiki: 0.3.0
   mkdirp: 1.0.4
   nunjucks: 3.2.3_chokidar@3.5.2
+  read-json-sync: 2.0.1
   recursive-readdir-sync: 1.0.6
+  sitemap-manager: 2.1.0
   uglify-js: 3.14.4
   windicss: 3.2.1
 
@@ -1211,6 +1215,10 @@ packages:
       unpipe: 1.0.0
     dev: false
 
+  /read-json-sync/2.0.1:
+    resolution: {integrity: sha512-8ZJRyVJ6jKMzXsuoTTb/LPQusL/bNdNZi1GV5cZ8m9JSvHGIfI7caizhNOPkLVaZWGUrARc88cAftSnRE1liDg==}
+    dev: false
+
   /readdirp/3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
     engines: {node: '>=8.10.0'}
@@ -1360,6 +1368,12 @@ packages:
       jsonc-parser: 3.0.0
       vscode-oniguruma: 1.6.1
       vscode-textmate: 5.2.0
+    dev: false
+
+  /sitemap-manager/2.1.0:
+    resolution: {integrity: sha512-Gj5zMtkastJi7Bt5qkYNp6lWhPy86+WVHuGjRGAQ6BRr9X2/g31kJNBza153sgVxvGwqwEhhtRHSnlsMT83/jg==}
+    dependencies:
+      xml: 1.0.1
     dev: false
 
   /socket.io-adapter/1.1.2:
@@ -1613,6 +1627,10 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: false
+
+  /xml/1.0.1:
+    resolution: {integrity: sha1-eLpyAgApxbyHuKgaPPzXS0ovweU=}
     dev: false
 
   /xmlhttprequest-ssl/1.6.3:
