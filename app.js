@@ -179,6 +179,9 @@ if (saatDev) {
     app.use(express.static('static'));
 
     app.get('/favicon.ico', (req, res) => res.status(204));
+    app.get('/', function(req, res){
+      res.render('index.html')
+    })
     // Respond to all GET requests by rendering relevant page using Nunjucks
     app.get(/\/(.+)/, function(req, res) {
       res.render(req.params[0]);
@@ -194,7 +197,7 @@ if (saatDev) {
   browserSync.watch('**/*.*').on('change', browserSync.reload)
   browserSync.init({
     proxy: {
-      target: `http://localhost:${portAcak}/index.html`,
+      target: `http://localhost:${portAcak}`,
     },
     rewriteRules: [{
       match: /[\s\S]*/,
