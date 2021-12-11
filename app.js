@@ -77,8 +77,8 @@ function olahSemuanya(html) {
     if (fs.existsSync('./unmei.json')){
       const ambilConfig = readJsonSync('unmei.json')
       if (ambilConfig.situs){
-        buatSitemap(ambilConfig.situs)
         buatRobots(ambilConfig.situs)
+        buatSitemap(ambilConfig.situs)
       }
     }
   }
