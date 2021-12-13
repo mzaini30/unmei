@@ -63,12 +63,12 @@ function olahSemuanya(html) {
     isi = minify(isi, {
       collapseWhitespace: true,
       removeComments: true,
-      collapseInlineTagWhitespace: true,
+      // collapseInlineTagWhitespace: true,
       minifyJS: true,
       minifyCSS: true,
       ignoreCustomFragments: [/\{\{[\s\S]*?\}\}/],
       customEventAttributes: [/^(?:v-on:|@)[a-z]{3,}$/],
-      keepClosingSlash: true
+      // keepClosingSlash: true
     })
 
     isi = isi.replace(/<script>a;/g, '<script type="module">')
