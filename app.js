@@ -20,7 +20,7 @@ import installBrowserSync from 'browser-sync'
 
 import markdown from 'markdown-it'
 import getShiki from 'markdown-it-shiki'
-import githubHeading from 'markdown-it-github-headings'
+// import githubHeading from 'markdown-it-github-headings'
 
 const md = markdown()
 const shiki = getShiki.default
@@ -28,10 +28,10 @@ const shiki = getShiki.default
 md.use(shiki, {
   theme: 'nord'
 })
-md.use(githubHeading, {
-  prefixHeadingIds: false,
-  enableHeadingLinkIcons: false
-})
+// md.use(githubHeading, {
+//   prefixHeadingIds: false,
+//   enableHeadingLinkIcons: false
+// })
 
 const saatDev = process.argv.includes('dev')
 const saatBuild = process.argv.includes('build')

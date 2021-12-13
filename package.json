@@ -1,6 +1,6 @@
 {
   "name": "unmei",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "description": "SSG tercepat...",
   "main": "index.js",
   "bin": {
@@ -28,7 +28,6 @@
     "glob": "^7.2.0",
     "html-minifier": "^4.0.0",
     "markdown-it": "^12.3.0",
-    "markdown-it-github-headings": "^2.0.0",
     "markdown-it-shiki": "^0.3.0",
     "mkdirp": "^1.0.4",
     "nunjucks": "^3.2.3",
