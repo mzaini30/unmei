@@ -108,3 +108,4 @@ Buat file `unmei.json` yang isinya seperti ini:
 - [x] Ganti delimiter Nunjucks jadi {$ $}
 - [x] Dynamic port
 - [x] Hapus error folder static kalau nggak ada
+- [ ] Auto generate ekstensi .md ke .html dengan format seperti Jekyll
