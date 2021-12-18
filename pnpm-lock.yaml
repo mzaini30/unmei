@@ -10,6 +10,7 @@ specifiers:
   glob: ^7.2.0
   html-minifier: ^4.0.0
   markdown-it: ^12.3.0
+  markdown-it-imsize: ^2.0.1
   markdown-it-shiki: ^0.3.0
   mkdirp: ^1.0.4
   nunjucks: ^3.2.3
@@ -29,6 +30,7 @@ dependencies:
   glob: 7.2.0
   html-minifier: 4.0.0
   markdown-it: 12.3.0
+  markdown-it-imsize: 2.0.1
   markdown-it-shiki: 0.3.0
   mkdirp: 1.0.4
   nunjucks: 3.2.3_chokidar@3.5.2
@@ -938,6 +940,10 @@ packages:
 
   /lower-case/1.1.4:
     resolution: {integrity: sha1-miyr0bno4K6ZOkv31YdcOcQujqw=}
+    dev: false
+
+  /markdown-it-imsize/2.0.1:
+    resolution: {integrity: sha1-zKBCeQXQUziiR8ucqdloxc3dUXA=}
     dev: false
 
   /markdown-it-shiki/0.3.0:

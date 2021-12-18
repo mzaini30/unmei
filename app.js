@@ -20,6 +20,8 @@ import installBrowserSync from 'browser-sync'
 
 import markdown from 'markdown-it'
 import getShiki from 'markdown-it-shiki'
+// import { markdownItImageSize } from "markdown-it-image-size"
+import imsize from 'markdown-it-imsize'
 // import githubHeading from 'markdown-it-github-headings'
 
 const md = markdown()
@@ -28,6 +30,8 @@ const shiki = getShiki.default
 md.use(shiki, {
   theme: 'nord'
 })
+md.use(imsize)
+// md.use(markdownItImageSize)
 // md.use(githubHeading, {
 //   prefixHeadingIds: false,
 //   enableHeadingLinkIcons: false
