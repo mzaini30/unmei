@@ -258,9 +258,17 @@ if (saatDev) {
     }]
   })
 
-  chokidar.watch('./src', {}).on('all', (event, path) => {
-    server()
-  });
+  server()
+  chokidar.watch('./src', {})
+          .on('add', () => server())
+          .on('change', () => server())
+          .on('unlink', () => server())
+          .on('addDir', () => server())
+          .on('unlinkDir', () => server())
+
+  // chokidar.watch('./src', {}).on('all', (event, path) => {
+  //   server()
+  // });
 }
 
 function olahWindi(html) {
