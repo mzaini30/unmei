@@ -75,7 +75,7 @@ function olahSemuanya(html) {
       // keepClosingSlash: true
     })
 
-    isi = isi.replace(/<script>a;/g, '<script type="module">')
+    isi = isi.replace(/<script>a[;,]/g, '<script type="module">')
 
     let situs = ''
     if (fs.existsSync('./unmei.json')){
