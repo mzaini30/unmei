@@ -168,20 +168,18 @@ if (saatBuild) {
       fs.writeFileSync(x, isi.styles)
     }
 
+    // generate sitemap
+    if (fs.existsSync('./unmei.json')){
+      const ambilConfig = readJsonSync('unmei.json')
+      if (ambilConfig.situs){
+        generateQuicklink()
+        buatRobots(ambilConfig.situs)
+        buatSitemap(ambilConfig.situs)
+      }
+    }
+
   })
 
-  // generate sitemap
-  let situs = ''
-  if (fs.existsSync('./unmei.json')){
-    createFolderIfNone('public')
-    const ambilConfig = readJsonSync('unmei.json')
-    if (ambilConfig.situs){
-      buatRobots(ambilConfig.situs)
-      buatSitemap(ambilConfig.situs)
-      generateQuicklink()
-      // isi = buatQuicklink(html)
-    }
-  }
 }
 
 function buatRobots(situs){
