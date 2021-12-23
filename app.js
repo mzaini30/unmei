@@ -7,7 +7,7 @@ import CleanCSS from 'clean-css'
 import UglifyJS from 'uglify-js'
 import recursive from 'recursive-readdir-sync'
 import { minify } from 'html-minifier'
-import windi from './windi.js'
+import windi from './modul/windi.js'
 import fs from 'fs-extra'
 import nunjucks from 'nunjucks'
 import { resolve, dirname } from 'path'
@@ -23,6 +23,8 @@ import getShiki from 'markdown-it-shiki'
 // import { markdownItImageSize } from "markdown-it-image-size"
 import imsize from 'markdown-it-imsize'
 // import githubHeading from 'markdown-it-github-headings'
+
+import {kasihQuicklink, generateQuicklink} from './modul/buatQuicklink.js'
 
 const md = markdown()
 const shiki = getShiki.default
@@ -62,6 +64,7 @@ function olahSemuanya(html) {
   }
   isi = renderMarkdown(isi)
   if (saatBuild) {
+
     isi = isi.replace(/<script type=.module.>/g, '<script>a;')
 
     isi = minify(isi, {
@@ -77,13 +80,8 @@ function olahSemuanya(html) {
 
     isi = isi.replace(/<script>a[;,]/g, '<script type="module">')
 
-    let situs = ''
     if (fs.existsSync('./unmei.json')){
-      const ambilConfig = readJsonSync('unmei.json')
-      if (ambilConfig.situs){
-        buatRobots(ambilConfig.situs)
-        buatSitemap(ambilConfig.situs)
-      }
+      isi = kasihQuicklink(isi)
     }
   }
   return isi
@@ -171,6 +169,19 @@ if (saatBuild) {
     }
 
   })
+
+  // generate sitemap
+  let situs = ''
+  if (fs.existsSync('./unmei.json')){
+    createFolderIfNone('public')
+    const ambilConfig = readJsonSync('unmei.json')
+    if (ambilConfig.situs){
+      buatRobots(ambilConfig.situs)
+      buatSitemap(ambilConfig.situs)
+      generateQuicklink()
+      // isi = buatQuicklink(html)
+    }
+  }
 }
 
 function buatRobots(situs){
