@@ -56,6 +56,7 @@ const tags = {
   variableEnd: '$}'
 }
 createFolderIfNone('static')
+generateQuicklink()
 
 function olahSemuanya(html) {
   let isi = olahWindi(html)
@@ -63,6 +64,9 @@ function olahSemuanya(html) {
     isi = isi.replace(/<style lang=['"]windi['"]>([\S\s]*?)<\/style>/g, '')
   }
   isi = renderMarkdown(isi)
+  if (saatDev) {
+    isi = kasihQuicklink(isi)
+  }
   if (saatBuild) {
 
     isi = isi.replace(/<script type=.module.>/g, '<script>a;')
@@ -172,7 +176,7 @@ if (saatBuild) {
     if (fs.existsSync('./unmei.json')){
       const ambilConfig = readJsonSync('unmei.json')
       if (ambilConfig.situs){
-        generateQuicklink()
+        // generateQuicklink()
         buatRobots(ambilConfig.situs)
         buatSitemap(ambilConfig.situs)
       }
