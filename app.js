@@ -64,9 +64,12 @@ function olahSemuanya(html) {
     isi = isi.replace(/<style lang=['"]windi['"]>([\S\s]*?)<\/style>/g, '')
   }
   isi = renderMarkdown(isi)
-  if (saatDev) {
-    isi = kasihQuicklink(isi)
-  }
+
+  // saat dev, nggak pakai quicklink
+  // if (saatDev) {
+  //   isi = kasihQuicklink(isi)
+  // }
+  
   if (saatBuild) {
 
     isi = isi.replace(/<script type=.module.>/g, '<script>a;')
