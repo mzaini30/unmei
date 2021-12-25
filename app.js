@@ -246,14 +246,22 @@ if (saatDev) {
     app.use(express.static('static'));
 
     app.get('/favicon.ico', (req, res) => res.status(204));
+
     app.get('/', function(req, res) {
       res.render('index.html')
     })
+
     // Respond to all GET requests by rendering relevant page using Nunjucks
-    app.get(/\/(.+)/, function(req, res) {
+    // Kalau tidak diakhiri dengan /
+    app.get(/\/(.+\.html)/, function(req, res) {
       res.render(req.params[0]);
     });
 
+    // Kalau diakhiri dengan /
+    app.get(/\/(.+\/)/, function(req, res) {
+      res.render(req.params[0].replace(/\/$/, '/index.html'))
+    });
+    
   }
   const portAcak = `${Math.random()}`.substring(2, 6).replace(/0/g, '1')
   const port = process.env.PORT || portAcak;
