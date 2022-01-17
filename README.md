@@ -41,6 +41,8 @@ Untuk mode dev: `unmei dev`
 
 Untuk mode build: `unmei build`
 
+Prettier: `unmei format`
+
 ## Fitur
 
 ### Windi
@@ -110,3 +112,5 @@ Buat file `unmei.json` yang isinya seperti ini:
 - [x] Hapus error folder static kalau nggak ada
 - [ ] Auto generate ekstensi .md ke .html dengan format seperti Jekyll
 - [ ] Kasih Turbolink
+- [x] Kasih Quicklink
+- [ ] Kasih Prettier
