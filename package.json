@@ -1,14 +1,13 @@
 {
   "name": "unmei",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "SSG tercepat...",
-  "main": "index.js",
+  "main": "app.js",
   "bin": {
     "unmei": "./app.js"
   },
   "keywords": [],
   "author": "",
-  "type": "module",
   "license": "ISC",
   "repository": {
     "type": "git",
@@ -20,7 +19,6 @@
   "homepage": "https://github.com/mzaini30/unmei#readme",
   "dependencies": {
     "browser-sync": "^2.27.7",
-    "chalk": "^5.0.0",
     "chokidar": "^3.5.2",
     "clean-css": "^5.2.2",
     "express": "^4.17.1",

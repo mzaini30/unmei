@@ -1,50 +1,14 @@
 #!/usr/bin/env node
 
-import readJsonSync from "read-json-sync";
-import { SitemapManager } from "sitemap-manager";
-import express from "express";
-import CleanCSS from "clean-css";
-import UglifyJS from "uglify-js";
-import recursive from "recursive-readdir-sync";
-import { minify } from "html-minifier";
-import windi from "./modul/windi.js";
-import fs from "fs-extra";
-import nunjucks from "nunjucks";
-import { resolve, dirname } from "path";
-import mkdirp from "mkdirp";
-import { readFileSync, writeFileSync } from "fs";
-import chalk from "chalk";
-import glob from "glob";
-import chokidar from "chokidar";
-import installBrowserSync from "browser-sync";
-import prettier from "prettier";
-
-import markdown from "markdown-it";
-import getShiki from "markdown-it-shiki";
-// import { markdownItImageSize } from "markdown-it-image-size"
-import imsize from "markdown-it-imsize";
-// import githubHeading from 'markdown-it-github-headings'
-
-import { kasihQuicklink, generateQuicklink } from "./modul/buatQuicklink.js";
-
-const md = markdown();
-const shiki = getShiki.default;
-
-md.use(shiki, {
-  theme: "nord",
-});
-md.use(imsize);
-// md.use(markdownItImageSize)
-// md.use(githubHeading, {
-//   prefixHeadingIds: false,
-//   enableHeadingLinkIcons: false
-// })
-
 const saatDev = process.argv.includes("dev");
 const saatBuild = process.argv.includes("build");
 const format = process.argv.includes("format");
 
 if (format) {
+  const recursive = require("recursive-readdir-sync");
+  const { readFileSync, writeFileSync } = require("fs");
+  const prettier = require("prettier");
+
   const isi_src = recursive("src").filter((x) => x.match(/\.html$/));
   for (let x of isi_src) {
     console.log(x);
@@ -76,18 +40,14 @@ if (format) {
       .replace(/<div>\s*<!-- raw -->/g, "{% raw %}")
       .replace(/<\/div>\s*<!-- endraw -->/g, "{% endraw %}");
 
-    // isinya = isinya
-    //   .replace(/\s*<pre>\s*<!-- markdown -->/g, "\n@markdown")
-    //   .replace(/@endmarkdown<\/pre\s*>/g, "@endmarkdown");
     writeFileSync(x, isinya);
   }
-  // prettier.format()
 }
 
-const browserSync = installBrowserSync.create();
-
 function createFolderIfNone(dirName) {
-  if (!fs.existsSync(dirName)) fs.mkdirSync(dirName);
+  const { existsSync, mkdirSync } = require("fs");
+
+  if (!existsSync(dirName)) mkdirSync(dirName);
 
   return;
 }
@@ -97,19 +57,19 @@ const tags = {
   variableEnd: "$}",
 };
 createFolderIfNone("static");
+const { generateQuicklink } = require("./modul/buatQuicklink.js");
 generateQuicklink();
 
 function olahSemuanya(html) {
+  const { minify } = require("html-minifier");
+  const { existsSync } = require("fs");
+  const { kasihQuicklink } = require("./modul/buatQuicklink.js");
+
   let isi = olahWindi(html);
   if (saatBuild) {
     isi = isi.replace(/<style lang=['"]windi['"]>([\S\s]*?)<\/style>/g, "");
   }
   isi = renderMarkdown(isi);
-
-  // saat dev, nggak pakai quicklink
-  // if (saatDev) {
-  //   isi = kasihQuicklink(isi)
-  // }
 
   if (saatBuild) {
     isi = isi.replace(/<script type=.module.>/g, "<script>a;");
@@ -127,7 +87,7 @@ function olahSemuanya(html) {
 
     isi = isi.replace(/<script>a[;,]/g, '<script type="module">');
 
-    if (fs.existsSync("./unmei.json")) {
+    if (existsSync("./unmei.json")) {
       isi = kasihQuicklink(isi);
     }
   }
@@ -135,6 +95,18 @@ function olahSemuanya(html) {
 }
 
 function renderMarkdown(teks) {
+  const markdown = require("markdown-it");
+  const getShiki = require("markdown-it-shiki");
+  const imsize = require("markdown-it-imsize");
+
+  const md = markdown();
+  const shiki = getShiki.default;
+
+  md.use(shiki, {
+    theme: "nord",
+  });
+  md.use(imsize);
+
   function olah(teks) {
     let pecahBaris = teks.split("\n");
     pecahBaris = pecahBaris.filter((x, n) => n != 0);
@@ -162,6 +134,17 @@ function renderMarkdown(teks) {
 }
 
 if (saatBuild) {
+  const nunjucks = require("nunjucks");
+  const { resolve, dirname } = require("path");
+  const mkdirp = require("mkdirp");
+  const glob = require("glob");
+  const { readFileSync, writeFileSync, existsSync } = require("fs");
+  const { copy } = require("fs-extra");
+  const recursive = require("recursive-readdir-sync");
+  const { minify } = require("uglify-js");
+  const CleanCSS = require("clean-css");
+  const readJsonSync = require("read-json-sync");
+
   const nunjucksEnv = nunjucks.configure("./src", {
     trimBlocks: true,
     lstripBlocks: true,
@@ -188,13 +171,10 @@ if (saatBuild) {
         mkdirp.sync(dirname(outputFile));
       }
 
-      console.log(chalk.blue("Rendering: " + file));
+      console.log("Rendering: " + file);
       // res: hasil build
       res = olahSemuanya(res);
 
-      // res = olahWindi(res)
-      // res = res.replace(/<style lang=['"]windi['"]>([\S\s]*?)<\/style>/g, '')
-      // res = renderMarkdown(res)
       writeFileSync(outputFile, res);
     }
   }
@@ -208,28 +188,28 @@ if (saatBuild) {
 
   // Render the files given a glob pattern (except the ones starting with "_")
   glob("**/*.html", globOptions, (err, files) => {
-    if (err) return console.error(chalk.red(err));
+    if (err) return console.log(err);
     render(files);
   });
-  fs.copy("./static", "./public/").then(() => {
+  copy("./static", "./public/").then(() => {
     let files = recursive("public");
 
     let fileJS = files.filter((x) => x.match(/\.js$/));
     for (let x of fileJS) {
-      let isi = fs.readFileSync(x).toString();
-      isi = UglifyJS.minify(isi);
-      fs.writeFileSync(x, isi.code);
+      let isi = readFileSync(x).toString();
+      isi = minify(isi);
+      writeFileSync(x, isi.code);
     }
 
     let fileCSS = files.filter((x) => x.match(/\.css$/));
     for (let x of fileCSS) {
-      let isi = fs.readFileSync(x).toString();
+      let isi = readFileSync(x).toString();
       isi = new CleanCSS().minify(isi);
-      fs.writeFileSync(x, isi.styles);
+      writeFileSync(x, isi.styles);
     }
 
     // generate sitemap
-    if (fs.existsSync("./unmei.json")) {
+    if (existsSync("./unmei.json")) {
       const ambilConfig = readJsonSync("unmei.json");
       if (ambilConfig.situs) {
         // generateQuicklink()
@@ -241,6 +221,8 @@ if (saatBuild) {
 }
 
 function buatRobots(situs) {
+  const { writeFileSync } = require("fs");
+
   let isi = `
     User-agent: *
     Allow: /
@@ -254,10 +236,13 @@ function buatRobots(situs) {
     .split("\n")
     .map((x) => (x = x.trimStart()))
     .join("\n");
-  fs.writeFileSync("public/robots.txt", isi);
+  writeFileSync("public/robots.txt", isi);
 }
 
 function buatSitemap(situs) {
+  const recursive = require("recursive-readdir-sync");
+  const { SitemapManager } = require("sitemap-manager");
+
   let files = recursive("public");
   files = ["public/", ...files];
   files = files.map((x) => x.replace(/^public/, situs));
@@ -284,6 +269,12 @@ function buatSitemap(situs) {
 }
 
 if (saatDev) {
+  const express = require("express");
+  const nunjucks = require("nunjucks");
+  const installBrowserSync = require("browser-sync");
+  const { watch, init, reload } = installBrowserSync.create();
+  const chokidar = require("chokidar");
+
   const app = express();
 
   function server() {
@@ -326,8 +317,8 @@ if (saatDev) {
   app.listen(port);
   console.log("Listening on port %s...", port);
 
-  browserSync.watch("**/*.*").on("change", browserSync.reload);
-  browserSync.init({
+  watch("**/*.*").on("change", reload);
+  init({
     proxy: {
       target: `http://localhost:${portAcak}`,
     },
@@ -349,13 +340,11 @@ if (saatDev) {
     .on("unlink", () => server())
     .on("addDir", () => server())
     .on("unlinkDir", () => server());
-
-  // chokidar.watch('./src', {}).on('all', (event, path) => {
-  //   server()
-  // });
 }
 
 function olahWindi(html) {
+  const windi = require("./modul/windi.js");
+
   let css = windi(html);
   if (saatDev) {
     return html.replace(
