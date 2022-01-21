@@ -3,6 +3,7 @@
 const saatDev = process.argv.includes("dev");
 const saatBuild = process.argv.includes("build");
 const format = process.argv.includes("format");
+const format_build = process.argv.includes("format-build");
 
 if (format) {
   const recursive = require("recursive-readdir-sync");
@@ -39,6 +40,27 @@ if (format) {
       .replace(/<\/div>\s*<!-- endmacro -->/g, "{% endmacro %}")
       .replace(/<div>\s*<!-- raw -->/g, "{% raw %}")
       .replace(/<\/div>\s*<!-- endraw -->/g, "{% endraw %}");
+
+    writeFileSync(x, isinya);
+  }
+}
+
+
+if (format_build) {
+  const recursive = require("recursive-readdir-sync");
+  const { readFileSync, writeFileSync } = require("fs");
+  const prettier = require("prettier");
+
+  const isi_src = recursive("public").filter((x) => x.match(/\.html$/));
+  for (let x of isi_src) {
+    console.log(x);
+
+    let isinya = readFileSync(x).toString();
+    isinya = prettier.format(isinya, {
+      semi: false,
+      parser: "html",
+    });
+
 
     writeFileSync(x, isinya);
   }

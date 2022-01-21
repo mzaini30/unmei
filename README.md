@@ -43,6 +43,8 @@ Untuk mode build: `unmei build`
 
 Prettier: `unmei format`
 
+Prettier folder public: `unmei format-build`
+
 ## Fitur
 
 ### Windi
