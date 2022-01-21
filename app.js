@@ -90,7 +90,6 @@ function olahSemuanya(html) {
   let isi = olahWindi(html);
   if (saatBuild) {
     isi = isi.replace(/<style lang=['"]windi['"]>([\S\s]*?)<\/style>/g, "");
-    isi = isi.replace(/var\(--tw-empty\)/g, 'var(--tw-empty,/*!*/ /*!*/)')
   }
   isi = renderMarkdown(isi);
 
@@ -109,6 +108,7 @@ function olahSemuanya(html) {
     });
 
     isi = isi.replace(/<script>a[;,]/g, '<script type="module">');
+    isi = isi.replace(/var\(--tw-empty(, )?\)/g, 'var(--tw-empty,/*!*/ /*!*/)')
 
     if (existsSync("./unmei.json")) {
       isi = kasihQuicklink(isi);
